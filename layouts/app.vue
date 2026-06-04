@@ -1,0 +1,170 @@
+<script setup>
+const auth = useAuthStore()
+const mobileMenuOpen = ref(false)
+
+const navItems = [
+  {
+    label: 'Home',
+    to: '/dashboard',
+    icon: 'i-heroicons-home-20-solid',
+  },
+  {
+    label: 'Members',
+    to: '/members',
+    icon: 'i-heroicons-user-group-20-solid',
+  },
+  {
+    label: 'Settings',
+    to: '/settings',
+    icon: 'i-heroicons-cog-6-tooth-20-solid',
+  },
+]
+
+const userMenu = computed(() => [
+  [
+    {
+      label: auth.workerName,
+      icon: 'i-heroicons-user-circle-20-solid',
+      disabled: true,
+    },
+  ],
+  [
+    {
+      label: 'Sign out',
+      icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
+      onSelect: () => auth.logout(),
+    },
+  ],
+])
+</script>
+
+<template>
+  <div class="min-h-dvh bg-gray-50 text-gray-900">
+    <aside class="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-gray-200 bg-white lg:block">
+      <div class="flex h-16 items-center gap-3 border-b border-gray-100 px-5">
+        <div class="grid h-10 w-10 place-items-center rounded-xl bg-[#a83632] text-sm font-bold text-white">
+          SCC
+        </div>
+        <div>
+          <p class="m-0 text-sm font-semibold text-gray-950">SCC Reporting</p>
+          <p class="m-0 text-xs text-gray-500">Worker portal</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1 p-3">
+        <NuxtLink
+          v-for="item in navItems"
+          :key="item.to"
+          :to="item.to"
+          class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 no-underline hover:bg-gray-50 hover:text-gray-950"
+          active-class="!bg-[#a83632]/10 !text-[#a83632]"
+        >
+          <UIcon :name="item.icon" class="h-5 w-5" />
+          <span>{{ item.label }}</span>
+        </NuxtLink>
+      </nav>
+    </aside>
+
+    <div class="lg:pl-72">
+      <header class="sticky top-0 z-20 border-b border-gray-200 bg-white/95 px-4 py-3 backdrop-blur sm:px-6 lg:px-8">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              icon="i-heroicons-bars-3-20-solid"
+              class="lg:hidden"
+              aria-label="Open navigation menu"
+              @click="mobileMenuOpen = true"
+            />
+            <div>
+              <p class="m-0 text-xs font-semibold uppercase tracking-[0.18em] text-[#a83632]">Reporting</p>
+              <p class="m-0 text-sm text-gray-500">Worker workspace</p>
+            </div>
+          </div>
+
+          <UDropdownMenu :items="userMenu">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              class="rounded-full"
+            >
+              <span class="grid h-9 w-9 place-items-center rounded-full bg-[#a83632] text-sm font-semibold text-white">
+                {{ auth.workerInitials }}
+              </span>
+            </UButton>
+          </UDropdownMenu>
+        </div>
+      </header>
+
+      <main class="mx-auto max-w-6xl px-4 pb-24 pt-5 sm:px-6 lg:px-8">
+        <slot />
+      </main>
+    </div>
+
+    <div
+      v-if="mobileMenuOpen"
+      class="fixed inset-0 z-50 lg:hidden"
+      role="dialog"
+      aria-modal="true"
+    >
+      <button
+        type="button"
+        class="absolute inset-0 h-full w-full bg-gray-950/40"
+        aria-label="Close navigation menu"
+        @click="mobileMenuOpen = false"
+      />
+
+      <aside class="relative flex min-h-dvh w-80 max-w-[86vw] flex-col border-r border-gray-200 bg-white shadow-xl">
+        <div class="flex h-16 items-center justify-between border-b border-gray-100 px-4">
+          <div class="flex items-center gap-3">
+            <div class="grid h-10 w-10 place-items-center rounded-xl bg-[#a83632] text-sm font-bold text-white">
+              SCC
+            </div>
+            <div>
+              <p class="m-0 text-sm font-semibold text-gray-950">SCC Reporting</p>
+              <p class="m-0 text-xs text-gray-500">Worker portal</p>
+            </div>
+          </div>
+
+          <UButton
+            color="neutral"
+            variant="ghost"
+            icon="i-heroicons-x-mark-20-solid"
+            aria-label="Close navigation menu"
+            @click="mobileMenuOpen = false"
+          />
+        </div>
+
+        <nav class="flex-1 space-y-1 p-3">
+          <NuxtLink
+            v-for="item in navItems"
+            :key="item.to"
+            :to="item.to"
+            class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-gray-600 no-underline hover:bg-gray-50 hover:text-gray-950"
+            active-class="!bg-[#a83632]/10 !text-[#a83632]"
+            @click="mobileMenuOpen = false"
+          >
+            <UIcon :name="item.icon" class="h-5 w-5" />
+            <span>{{ item.label }}</span>
+          </NuxtLink>
+        </nav>
+      </aside>
+    </div>
+
+    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-sm lg:hidden">
+      <div class="mx-auto grid max-w-md grid-cols-3 gap-1">
+        <NuxtLink
+          v-for="item in navItems"
+          :key="item.to"
+          :to="item.to"
+          class="flex flex-col items-center gap-1 rounded-xl px-2 py-2 text-xs font-medium text-gray-500 no-underline"
+          active-class="!bg-[#a83632]/10 !text-[#a83632]"
+        >
+          <UIcon :name="item.icon" class="h-5 w-5" />
+          <span>{{ item.label }}</span>
+        </NuxtLink>
+      </div>
+    </nav>
+  </div>
+</template>
