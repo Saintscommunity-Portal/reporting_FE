@@ -11,7 +11,12 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isAuthenticated: (state) => Boolean(state.token),
-    workerName: (state) => state.worker?.name || state.worker?.email || 'Worker',
+    workerName: (state) => {
+      const profile = state.worker?.worker
+      const profileName = `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim()
+
+      return profileName || state.worker?.name || state.worker?.email || 'Worker'
+    },
     workerInitials() {
       const name = this.workerName.trim()
 

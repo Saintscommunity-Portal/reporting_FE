@@ -19,28 +19,32 @@ const navItems = [
     icon: 'i-heroicons-chart-pie-20-solid',
   },
   {
+    label: 'Study group',
+    to: '/study-group',
+    icon: 'i-heroicons-book-open-20-solid',
+  },
+  {
     label: 'Settings',
     to: '/settings',
     icon: 'i-heroicons-cog-6-tooth-20-solid',
   },
 ]
 
-const userMenu = computed(() => [
-  [
-    {
-      label: auth.workerName,
-      icon: 'i-heroicons-user-circle-20-solid',
-      disabled: true,
-    },
-  ],
-  [
-    {
-      label: 'Sign out',
-      icon: 'i-heroicons-arrow-right-on-rectangle-20-solid',
-      onSelect: () => auth.logout(),
-    },
-  ],
+const workerProfile = computed(() => auth.worker?.worker || {})
+const profileRows = computed(() => [
+  { label: 'Name', value: auth.workerName },
+  { label: 'Church', value: workerProfile.value.church_name || workerProfile.value.church?.name },
+  { label: 'Fellowship', value: workerProfile.value.fellowship_name || workerProfile.value.fellowship?.name },
+  { label: 'Cell', value: workerProfile.value.cell_name || workerProfile.value.cell?.name },
+  { label: 'Status', value: displayProfileValue(workerProfile.value.status) },
+  { label: 'Worker ID', value: workerProfile.value.slug },
 ])
+
+function displayProfileValue(value) {
+  if (value === null || value === undefined || value === '') return '-'
+
+  return String(value).replace(/_/g, ' ')
+}
 </script>
 
 <template>
@@ -88,17 +92,52 @@ const userMenu = computed(() => [
             </div>
           </div>
 
-          <UDropdownMenu :items="userMenu">
+          <UPopover>
             <UButton
               color="neutral"
               variant="ghost"
               class="rounded-full"
+              aria-label="Open profile menu"
             >
               <span class="grid h-9 w-9 place-items-center rounded-full bg-[#a83632] text-sm font-semibold text-white">
                 {{ auth.workerInitials }}
               </span>
             </UButton>
-          </UDropdownMenu>
+            <template #content>
+              <div class="w-72 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg">
+                <div class="flex items-center gap-3">
+                  <span class="grid h-11 w-11 place-items-center rounded-full bg-[#a83632] text-sm font-semibold text-white">
+                    {{ auth.workerInitials }}
+                  </span>
+                  <div class="min-w-0">
+                    <p class="m-0 truncate text-sm font-semibold text-gray-950">{{ auth.workerName }}</p>
+                    <p class="m-0 mt-0.5 truncate text-xs text-gray-500">{{ auth.worker?.email }}</p>
+                  </div>
+                </div>
+
+                <dl class="mt-4 space-y-2">
+                  <div
+                    v-for="row in profileRows"
+                    :key="row.label"
+                    class="flex items-start justify-between gap-3 text-sm"
+                  >
+                    <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ row.label }}</dt>
+                    <dd class="m-0 max-w-40 text-right capitalize text-gray-900">{{ row.value || '-' }}</dd>
+                  </div>
+                </dl>
+
+                <UButton
+                  color="neutral"
+                  variant="outline"
+                  icon="i-heroicons-arrow-right-on-rectangle-20-solid"
+                  class="mt-4 w-full justify-center border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                  @click="auth.logout()"
+                >
+                  Sign out
+                </UButton>
+              </div>
+            </template>
+          </UPopover>
         </div>
       </header>
 
@@ -158,7 +197,7 @@ const userMenu = computed(() => [
     </div>
 
     <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-sm lg:hidden">
-      <div class="mx-auto grid max-w-md grid-cols-4 gap-1">
+      <div class="mx-auto grid max-w-lg grid-cols-5 gap-1">
         <NuxtLink
           v-for="item in navItems"
           :key="item.to"
