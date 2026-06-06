@@ -18,3 +18,45 @@ select,
 textarea {
   -webkit-tap-highlight-color: transparent;
 }
+
+:root {
+  --scc-focus-green: #166534;
+  --scc-focus-green-soft: rgb(22 101 52 / 0.28);
+  --ui-primary: #166534;
+  --ui-color-primary-50: #f0fdf4;
+  --ui-color-primary-100: #dcfce7;
+  --ui-color-primary-200: #bbf7d0;
+  --ui-color-primary-300: #86efac;
+  --ui-color-primary-400: #4ade80;
+  --ui-color-primary-500: #166534;
+  --ui-color-primary-600: #14532d;
+  --ui-color-primary-700: #14532d;
+  --ui-color-primary-800: #052e16;
+  --ui-color-primary-900: #052e16;
+  --ui-color-primary-950: #022c22;
+}
+
+:where(button, a, input, select, textarea, [role="button"]):focus-visible {
+  outline: 2px solid var(--scc-focus-green);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--scc-focus-green-soft);
+}
+
+:where(input, select, textarea):focus,
+:where(input, select, textarea):focus-visible {
+  border-color: var(--scc-focus-green) !important;
+  --tw-ring-color: var(--scc-focus-green-soft) !important;
+  box-shadow: 0 0 0 3px var(--scc-focus-green-soft) !important;
+}
+
+:where(button, [role="button"]):active {
+  --tw-ring-color: var(--scc-focus-green-soft) !important;
+}
+
+:where(.ring-primary, .focus\:ring-primary:focus, .focus-visible\:ring-primary:focus-visible) {
+  --tw-ring-color: var(--scc-focus-green-soft) !important;
+}
+
+:where(.border-primary, .focus\:border-primary:focus, .focus-visible\:border-primary:focus-visible) {
+  border-color: var(--scc-focus-green) !important;
+}

@@ -14,6 +14,11 @@ const navItems = [
     icon: 'i-heroicons-user-group-20-solid',
   },
   {
+    label: 'Prayer group',
+    to: '/prayer-group',
+    icon: 'i-heroicons-chart-pie-20-solid',
+  },
+  {
     label: 'Settings',
     to: '/settings',
     icon: 'i-heroicons-cog-6-tooth-20-solid',
@@ -153,7 +158,7 @@ const userMenu = computed(() => [
     </div>
 
     <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-sm lg:hidden">
-      <div class="mx-auto grid max-w-md grid-cols-3 gap-1">
+      <div class="mx-auto grid max-w-md grid-cols-4 gap-1">
         <NuxtLink
           v-for="item in navItems"
           :key="item.to"

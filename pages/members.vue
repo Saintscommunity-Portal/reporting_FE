@@ -27,6 +27,7 @@ const form = reactive({
   full_name: '',
   gender: '',
   date_of_birth: '',
+  is_child: false,
   country: '',
   state: '',
   area: '',
@@ -116,6 +117,7 @@ function resetForm() {
   form.full_name = ''
   form.gender = ''
   form.date_of_birth = ''
+  form.is_child = false
   form.country = ''
   form.state = ''
   form.area = ''
@@ -141,6 +143,7 @@ function openEditForm(member) {
   form.full_name = member.fullName || ''
   form.gender = member.gender || ''
   form.date_of_birth = member.dateOfBirth || ''
+  form.is_child = Boolean(member.isChild)
   form.country = member.country || ''
   form.state = member.state || ''
   form.area = member.area || ''
@@ -382,7 +385,7 @@ onMounted(() => {
           <div class="min-w-0">
             <h2 class="m-0 truncate text-base font-semibold text-gray-950">{{ member.fullName }}</h2>
             <p class="mt-1 text-sm text-gray-500">
-              {{ displayValue(member.gender) }}<span v-if="member.dateOfBirth"> · {{ member.dateOfBirth }}</span><span v-if="member.area"> · {{ member.area }}</span>
+              {{ displayValue(member.gender) }}<span v-if="member.dateOfBirth"> · {{ member.dateOfBirth }}</span><span v-if="member.isChild"> · Child</span><span v-if="member.area"> · {{ member.area }}</span>
             </p>
           </div>
           <UBadge color="neutral" variant="soft">{{ displayValue(member.state) }}</UBadge>
@@ -437,6 +440,7 @@ onMounted(() => {
               <th class="px-3 py-3 font-semibold">Phone</th>
               <th class="px-3 py-3 font-semibold">Email</th>
               <th class="px-3 py-3 font-semibold">Date of birth</th>
+              <th class="px-3 py-3 font-semibold">Child</th>
               <th class="px-3 py-3 font-semibold">Location</th>
               <th class="px-3 py-3 font-semibold">Cell</th>
               <th class="px-3 py-3 text-right font-semibold">Actions</th>
@@ -453,6 +457,7 @@ onMounted(() => {
               <td class="px-3 py-4 text-gray-600">{{ displayValue(member.phone1) }}</td>
               <td class="px-3 py-4 text-gray-600">{{ displayValue(member.email) }}</td>
               <td class="px-3 py-4 text-gray-600">{{ displayValue(member.dateOfBirth) }}</td>
+              <td class="px-3 py-4 text-gray-600">{{ member.isChild ? 'Yes' : 'No' }}</td>
               <td class="px-3 py-4 text-gray-600">{{ displayValue(member.area) }}, {{ displayValue(member.state) }}, {{ displayValue(member.country) }}</td>
               <td class="px-3 py-4 text-gray-600">{{ displayValue(member.cellName) }}</td>
               <td class="px-3 py-4">
@@ -539,6 +544,13 @@ onMounted(() => {
             </UFormField>
             <UFormField label="Date of birth">
               <UInput v-model="form.date_of_birth" type="date" class="w-full" />
+            </UFormField>
+            <UFormField label="Child">
+              <UCheckbox
+                v-model="form.is_child"
+                label="This member is a child"
+                class="accent-[#a83632]"
+              />
             </UFormField>
             <UFormField label="Phone 1">
               <UInput v-model="form.phone_1" type="tel" class="w-full" />
@@ -648,6 +660,7 @@ onMounted(() => {
           <div v-for="item in [
             ['Gender', membersStore.selectedMember?.gender],
             ['Date of birth', membersStore.selectedMember?.dateOfBirth],
+            ['Child', membersStore.selectedMember?.isChild ? 'Yes' : 'No'],
             ['Phone 1', membersStore.selectedMember?.phone1],
             ['Phone 2', membersStore.selectedMember?.phone2],
             ['Email', membersStore.selectedMember?.email],
