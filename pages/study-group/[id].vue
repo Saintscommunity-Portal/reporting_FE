@@ -255,10 +255,10 @@ onMounted(refresh)
 
     <UModal v-model:open="submitOpen">
       <template #content>
-        <div class="space-y-4 p-5">
+        <div class="modal-dark space-y-4 bg-gray-950 p-5 text-white">
           <div>
-            <h2 class="m-0 text-lg font-semibold text-gray-950">{{ submitButtonLabel }} study group</h2>
-            <p class="m-0 mt-1 text-sm text-gray-500">{{ studyGroup?.title }}</p>
+            <h2 class="m-0 text-lg font-semibold text-white">{{ submitButtonLabel }} study group</h2>
+            <p class="m-0 mt-1 text-sm text-gray-300">{{ studyGroup?.title }}</p>
           </div>
           <UAlert v-if="formError" color="error" variant="soft" :title="formError" />
           <UFormField label="Submit for">
@@ -288,3 +288,11 @@ onMounted(refresh)
     </UModal>
   </section>
 </template>
+
+<style scoped>
+:deep(.modal-dark label),
+:deep(.modal-dark [class*="text-gray-900"]),
+:deep(.modal-dark [class*="text-gray-950"]) {
+  color: #ffffff !important;
+}
+</style>

@@ -502,16 +502,16 @@ onMounted(() => {
       aria-modal="true"
     >
       <form
-        class="member-form flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-white shadow-xl sm:max-w-2xl sm:rounded-2xl"
+        class="member-form flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-gray-950 text-white shadow-xl sm:max-w-2xl sm:rounded-2xl"
         @submit.prevent="saveMember"
       >
-        <div class="shrink-0 border-b border-gray-100 px-5 py-4">
+        <div class="shrink-0 border-b border-white/10 px-5 py-4">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <h2 class="m-0 text-xl font-semibold text-gray-950">
+              <h2 class="m-0 text-xl font-semibold text-white">
                 {{ isEditing ? 'Update member' : 'Add member' }}
               </h2>
-              <p class="mt-1 text-sm text-gray-500">
+              <p class="mt-1 text-sm text-gray-300">
                 {{ isEditing ? 'Edit member information you own.' : 'Create a new member assigned to your worker account.' }}
               </p>
             </div>
@@ -607,7 +607,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="shrink-0 border-t border-gray-200 bg-white px-5 py-4">
+        <div class="shrink-0 border-t border-white/10 bg-gray-950 px-5 py-4">
           <div class="flex gap-3">
             <UButton
               color="neutral"
@@ -637,13 +637,13 @@ onMounted(() => {
       role="dialog"
       aria-modal="true"
     >
-      <div class="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:mx-auto sm:max-w-xl sm:rounded-2xl">
+      <div class="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-gray-950 p-5 text-white shadow-xl sm:mx-auto sm:max-w-xl sm:rounded-2xl">
         <div class="mb-5 flex items-start justify-between gap-4">
           <div>
-            <h2 class="m-0 text-xl font-semibold text-gray-950">
+            <h2 class="m-0 text-xl font-semibold text-white">
               {{ membersStore.selectedMember?.fullName }}
             </h2>
-            <p class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm text-gray-300">
               Member details
             </p>
           </div>
@@ -675,9 +675,9 @@ onMounted(() => {
             ['Work address', membersStore.selectedMember?.workAddress],
             ['School address', membersStore.selectedMember?.schoolAddress],
             ['Notes', membersStore.selectedMember?.notes],
-          ]" :key="item[0]" class="rounded-xl border border-gray-200 p-3">
-            <dt class="text-xs font-medium text-gray-500">{{ item[0] }}</dt>
-            <dd class="mb-0 mt-1 text-sm font-medium text-gray-950">{{ displayValue(item[1]) }}</dd>
+          ]" :key="item[0]" class="rounded-xl border border-white/10 bg-white/5 p-3">
+            <dt class="text-xs font-medium text-gray-300">{{ item[0] }}</dt>
+            <dd class="mb-0 mt-1 text-sm font-medium text-white">{{ displayValue(item[1]) }}</dd>
           </div>
         </dl>
 
@@ -697,6 +697,11 @@ onMounted(() => {
 
 <style scoped>
 :deep(.member-form label) {
-  color: #111827 !important;
+  color: #ffffff !important;
+}
+
+:deep(.member-form [class*="text-gray-900"]),
+:deep(.member-form [class*="text-gray-950"]) {
+  color: #ffffff !important;
 }
 </style>
