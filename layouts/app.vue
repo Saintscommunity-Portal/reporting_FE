@@ -24,6 +24,16 @@ const navItems = [
     icon: 'i-heroicons-book-open-20-solid',
   },
   {
+    label: 'Meetings',
+    to: '/church-meetings',
+    icon: 'i-heroicons-calendar-days-20-solid',
+  },
+  {
+    label: 'Outreach',
+    to: '/outreaches',
+    icon: 'i-heroicons-megaphone-20-solid',
+  },
+  {
     label: 'Settings',
     to: '/settings',
     icon: 'i-heroicons-cog-6-tooth-20-solid',
@@ -197,7 +207,7 @@ function displayProfileValue(value) {
     </div>
 
     <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-sm lg:hidden">
-      <div class="mx-auto grid max-w-lg grid-cols-5 gap-1">
+      <div class="mx-auto grid max-w-lg grid-cols-7 gap-1">
         <NuxtLink
           v-for="item in navItems"
           :key="item.to"
