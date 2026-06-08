@@ -7,16 +7,20 @@ definePageMeta({
 const auth = useAuthStore()
 const form = reactive({
   email: '',
-  password: '',
 })
+const sent = ref(false)
+const message = ref('')
 
 async function handleSubmit() {
-  await auth.login({
+  message.value = ''
+  sent.value = false
+
+  const response = await auth.forgotPassword({
     email: form.email,
-    password: form.password,
   })
 
-  await navigateTo('/dashboard')
+  message.value = response?.message || 'If that worker account exists, a password reset link has been sent.'
+  sent.value = true
 }
 </script>
 
@@ -27,23 +31,30 @@ async function handleSubmit() {
         SCC
       </div>
       <p class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#a83632]">
-        Worker login
+        Password reset
       </p>
       <h1 class="m-0 text-3xl font-semibold tracking-tight text-gray-950">
-        Welcome back
+        Recover your account
       </h1>
       <p class="mt-3 text-sm leading-6 text-gray-500">
-        Sign in to manage your reporting workspace and member records.
+        Enter the email address for your worker account and we will send a secure reset link.
       </p>
     </div>
 
-    <UCard class="border border-gray-200 shadow-sm">
+    <UCard class="border border-gray-200 bg-white shadow-sm">
       <form class="space-y-5" @submit.prevent="handleSubmit">
         <UAlert
           v-if="auth.error"
           color="error"
           variant="soft"
           :title="auth.error"
+        />
+
+        <UAlert
+          v-if="sent"
+          color="success"
+          variant="soft"
+          :title="message"
         />
 
         <UFormField label="Email address" name="email">
@@ -59,27 +70,6 @@ async function handleSubmit() {
           />
         </UFormField>
 
-        <UFormField label="Password" name="password">
-          <UInput
-            v-model="form.password"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Enter your password"
-            size="xl"
-            class="w-full"
-            required
-          />
-        </UFormField>
-
-        <div class="flex justify-end">
-          <NuxtLink
-            to="/forgot-password"
-            class="text-sm font-semibold text-[#a83632] no-underline hover:text-[#922f2c]"
-          >
-            Forgot password?
-          </NuxtLink>
-        </div>
-
         <UButton
           type="submit"
           block
@@ -87,8 +77,17 @@ async function handleSubmit() {
           :loading="auth.loading"
           class="bg-[#a83632] text-white hover:bg-[#922f2c]"
         >
-          Sign in
+          Send reset link
         </UButton>
+
+        <div class="text-center">
+          <NuxtLink
+            to="/login"
+            class="text-sm font-semibold text-[#a83632] no-underline hover:text-[#922f2c]"
+          >
+            Back to sign in
+          </NuxtLink>
+        </div>
       </form>
     </UCard>
   </section>

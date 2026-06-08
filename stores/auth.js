@@ -85,6 +85,45 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async forgotPassword(payload) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const { request } = useWorkerApi()
+        return await request('/forgot-password', {
+          method: 'POST',
+          body: payload,
+        })
+      } catch (error) {
+        this.error = error?.data?.message || 'Unable to send password reset instructions.'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async resetPassword(payload) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const { request } = useWorkerApi()
+        return await request('/reset-password', {
+          method: 'POST',
+          body: payload,
+        })
+      } catch (error) {
+        const errors = error?.data?.errors
+        this.error = errors
+          ? Object.values(errors).flat().join(' ')
+          : error?.data?.message || 'Unable to reset your password.'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
     async refreshWorker() {
       if (!this.token) {
         this.initialized = true
