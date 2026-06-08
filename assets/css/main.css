@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 html {
   background: #f9fafb;
 }
@@ -9,6 +11,12 @@ body {
   min-height: 100vh;
   background: #f9fafb;
   color: #111827;
+}
+
+html.dark,
+html.dark body {
+  background: #030712;
+  color: #f9fafb;
 }
 
 button,
@@ -34,6 +42,13 @@ textarea {
   --ui-color-primary-800: #052e16;
   --ui-color-primary-900: #052e16;
   --ui-color-primary-950: #022c22;
+}
+
+.dark {
+  --scc-focus-green: #166534;
+  --scc-focus-green-soft: rgb(22 101 52 / 0.36);
+  --ui-bg: #030712;
+  --ui-text: #f9fafb;
 }
 
 :where(button, a, input, select, textarea, [role="button"]):focus-visible {
