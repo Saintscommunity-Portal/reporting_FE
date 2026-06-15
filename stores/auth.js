@@ -11,7 +11,12 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isAuthenticated: (state) => Boolean(state.token),
-    workerName: (state) => state.worker?.name || state.worker?.email || 'Worker',
+    workerName: (state) => {
+      const profile = state.worker?.worker
+      const profileName = `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim()
+
+      return profileName || state.worker?.name || state.worker?.email || 'Worker'
+    },
     workerInitials() {
       const name = this.workerName.trim()
 
@@ -74,6 +79,45 @@ export const useAuthStore = defineStore('auth', {
         return response
       } catch (error) {
         this.error = error?.data?.message || 'Unable to sign in with those credentials.'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async forgotPassword(payload) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const { request } = useWorkerApi()
+        return await request('/forgot-password', {
+          method: 'POST',
+          body: payload,
+        })
+      } catch (error) {
+        this.error = error?.data?.message || 'Unable to send password reset instructions.'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async resetPassword(payload) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const { request } = useWorkerApi()
+        return await request('/reset-password', {
+          method: 'POST',
+          body: payload,
+        })
+      } catch (error) {
+        const errors = error?.data?.errors
+        this.error = errors
+          ? Object.values(errors).flat().join(' ')
+          : error?.data?.message || 'Unable to reset your password.'
         throw error
       } finally {
         this.loading = false
