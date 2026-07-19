@@ -26,8 +26,8 @@ const summary = ref({
 })
 
 const filters = reactive({
-  date_from: '',
-  date_to: '',
+  from_month: currentMonthInput(),
+  to_month: currentMonthInput(),
 })
 
 const lastPage = computed(() => meta.value?.last_page || 1)
@@ -77,6 +77,50 @@ function displayPrayerGroup(group, fallbackId) {
   return `${day} - ${schedule}`
 }
 
+function currentMonthInput() {
+  const date = new Date()
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+}
+
+function monthParts(value) {
+  const [yearValue, monthValue] = String(value).split('-')
+  const year = Number(yearValue)
+  const month = Number(monthValue)
+
+  if (!year || !month) {
+    return null
+  }
+
+  return {
+    year,
+    month,
+    yearValue,
+    monthValue,
+  }
+}
+
+function monthRange(fromValue, toValue) {
+  const from = monthParts(fromValue)
+  const to = monthParts(toValue)
+
+  if (!from && !to) {
+    return {}
+  }
+
+  const first = from || to
+  const second = to || from
+  const firstValue = (first.year * 100) + first.month
+  const secondValue = (second.year * 100) + second.month
+  const start = firstValue <= secondValue ? first : second
+  const end = firstValue <= secondValue ? second : first
+  const lastDay = new Date(end.year, end.month, 0).getDate()
+
+  return {
+    date_from: `${start.yearValue}-${start.monthValue}-01`,
+    date_to: `${end.yearValue}-${end.monthValue}-${String(lastDay).padStart(2, '0')}`,
+  }
+}
+
 function participationGroupLabel(item) {
   if (isMakeUpPrayer(item)) {
     return 'Make Up'
@@ -110,12 +154,7 @@ function buildQuery() {
   const query = {
     page: page.value,
     per_page: perPage.value,
-  }
-
-  for (const [key, value] of Object.entries(filters)) {
-    if (value) {
-      query[key] = value
-    }
+    ...monthRange(filters.from_month, filters.to_month),
   }
 
   return query
@@ -158,8 +197,8 @@ async function applyFilters() {
 }
 
 async function clearFilters() {
-  filters.date_from = ''
-  filters.date_to = ''
+  filters.from_month = currentMonthInput()
+  filters.to_month = currentMonthInput()
   page.value = 1
   await fetchTrail()
 }
@@ -226,17 +265,21 @@ onMounted(fetchTrail)
     </UCard>
 
     <UCard class="border border-gray-200 bg-white shadow-sm">
-      <div class="grid gap-3 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end">
-        <UFormField label="From">
-          <UInput v-model="filters.date_from" type="date" class="w-full" />
+      <div class="mb-4">
+        <p class="m-0 text-sm font-semibold text-gray-950">Date filter</p>
+        <p class="m-0 mt-1 text-xs text-gray-500">Select a month-year range for prayer group records.</p>
+      </div>
+      <div class="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto] md:items-end">
+        <UFormField label="From month - year">
+          <UInput v-model="filters.from_month" type="month" class="w-full" />
         </UFormField>
-        <UFormField label="To">
-          <UInput v-model="filters.date_to" type="date" class="w-full" />
+        <UFormField label="To month - year">
+          <UInput v-model="filters.to_month" type="month" class="w-full" />
         </UFormField>
         <UButton
           color="neutral"
           variant="outline"
-          :disabled="loading || (!filters.date_from && !filters.date_to)"
+          :disabled="loading || (filters.from_month === currentMonthInput() && filters.to_month === currentMonthInput())"
           @click="clearFilters"
         >
           Reset
