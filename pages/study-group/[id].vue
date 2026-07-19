@@ -255,33 +255,34 @@ onMounted(refresh)
 
     <UModal v-model:open="submitOpen">
       <template #content>
-        <div class="modal-dark space-y-4 bg-gray-950 p-5 text-white">
+        <div class="modal-dark w-[calc(100vw-2rem)] max-w-lg space-y-4 bg-gray-950 p-5 text-white sm:w-full">
           <div>
             <h2 class="m-0 text-lg font-semibold text-white">{{ submitButtonLabel }} study group</h2>
             <p class="m-0 mt-1 text-sm text-gray-300">{{ studyGroup?.title }}</p>
           </div>
           <UAlert v-if="formError" color="error" variant="soft" :title="formError" />
-          <UFormField label="Submit for">
-            <USelect v-model="form.submit_for" :items="submitForOptions" />
+          <UFormField label="Submit for" class="w-full">
+            <USelect v-model="form.submit_for" :items="submitForOptions" class="w-full" />
           </UFormField>
-          <UFormField label="Submission type">
+          <UFormField label="Submission type" class="w-full">
             <USelect
               v-model="form.submission_type"
               :items="[
                 { label: 'Physical', value: 'physical' },
                 { label: 'Link', value: 'link' },
               ]"
+              class="w-full"
             />
           </UFormField>
-          <UFormField v-if="form.submission_type === 'link'" label="Submission link">
-            <UInput v-model="form.submission_link" placeholder="https://..." />
+          <UFormField v-if="form.submission_type === 'link'" label="Submission link" class="w-full">
+            <UInput v-model="form.submission_link" placeholder="https://..." class="w-full" />
           </UFormField>
-          <UFormField label="Note">
-            <UTextarea v-model="form.submission_note" />
+          <UFormField label="Note" class="w-full">
+            <UTextarea v-model="form.submission_note" class="w-full" />
           </UFormField>
-          <div class="flex justify-end gap-2">
-            <UButton color="neutral" variant="outline" @click="submitOpen = false">Cancel</UButton>
-            <UButton class="bg-[#a83632] text-white hover:bg-[#922f2c]" :loading="saving" @click="submitStudyGroup">Submit</UButton>
+          <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <UButton color="neutral" variant="outline" class="w-full justify-center sm:w-auto" @click="submitOpen = false">Cancel</UButton>
+            <UButton class="w-full justify-center bg-[#a83632] text-white hover:bg-[#922f2c] sm:w-auto" :loading="saving" @click="submitStudyGroup">Submit</UButton>
           </div>
         </div>
       </template>

@@ -158,10 +158,20 @@ onMounted(() => {
                 </dl>
 
                 <UButton
+                  to="/profile"
+                  color="neutral"
+                  variant="outline"
+                  icon="i-heroicons-user-circle-20-solid"
+                  class="mt-4 w-full justify-center border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
+                >
+                  View profile
+                </UButton>
+
+                <UButton
                   color="neutral"
                   variant="outline"
                   icon="i-heroicons-arrow-right-on-rectangle-20-solid"
-                  class="mt-4 w-full justify-center border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
+                  class="mt-2 w-full justify-center border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
                   @click="auth.logout()"
                 >
                   Sign out
@@ -173,7 +183,7 @@ onMounted(() => {
         </div>
       </header>
 
-      <main class="mx-auto max-w-6xl px-4 pb-24 pt-5 sm:px-6 lg:px-8">
+      <main class="mx-auto max-w-6xl px-4 pb-8 pt-5 sm:px-6 lg:px-8">
         <slot />
       </main>
     </div>
@@ -227,20 +237,5 @@ onMounted(() => {
         </nav>
       </aside>
     </div>
-
-    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-sm dark:border-gray-800 dark:bg-gray-950 lg:hidden">
-      <div class="mx-auto grid max-w-lg grid-cols-8 gap-1">
-        <NuxtLink
-          v-for="item in navItems"
-          :key="item.to"
-          :to="item.to"
-          class="flex flex-col items-center gap-1 rounded-xl px-2 py-2 text-xs font-medium text-gray-500 no-underline dark:text-gray-400"
-          active-class="!bg-[#a83632]/10 !text-[#a83632] dark:!bg-[#a83632]/20 dark:!text-[#f2b3af]"
-        >
-          <UIcon :name="item.icon" class="h-5 w-5" />
-          <span>{{ item.label }}</span>
-        </NuxtLink>
-      </div>
-    </nav>
   </div>
 </template>
