@@ -236,12 +236,13 @@ onMounted(async () => {
 
     <UModal v-model:open="reportOpen">
       <template #content>
-        <div class="modal-dark max-h-[88vh] space-y-4 overflow-y-auto bg-gray-950 p-5 text-white">
+        <div class="modal-dark max-h-[88vh] w-[min(92vw,720px)] space-y-4 overflow-y-auto bg-gray-950 p-5 text-white">
           <h2 class="m-0 text-lg font-semibold text-white">Outreach report</h2>
           <UFormField label="Report for">
             <USelect
               :model-value="reportForm.reported_for_type === 'worker' ? 'myself' : reportForm.reported_for_member_id"
               :items="memberOptions"
+              class="w-full"
               @update:model-value="chooseReportedFor"
             />
           </UFormField>
@@ -256,7 +257,6 @@ onMounted(async () => {
             <UCheckbox v-model="reportForm.filled" label="Filled" />
             <UCheckbox v-model="reportForm.healed" label="Healed" />
           </div>
-          <UFormField label="Follow-up count"><UInput v-model="reportForm.followup_count" type="number" /></UFormField>
           <UFormField label="Notes"><UTextarea v-model="reportForm.notes" /></UFormField>
           <div class="flex justify-end gap-2">
             <UButton color="neutral" variant="outline" @click="reportOpen = false">Cancel</UButton>

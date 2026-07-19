@@ -9,9 +9,6 @@ const locationsStore = useLocationsStore()
 
 const filters = reactive({
   search: '',
-  country: '',
-  state: '',
-  area: '',
 })
 
 const page = ref(1)
@@ -60,10 +57,6 @@ const stateOptions = computed(() => locationsStore.stateOptions(form.country))
 const stateDisabled = computed(() => !form.country || stateOptions.value.length === 0)
 const areaOptions = computed(() => locationsStore.subdivisionOptions(form.country, form.state))
 const areaDisabled = computed(() => !form.country || !form.state || areaOptions.value.length === 0)
-const filterStateOptions = computed(() => locationsStore.stateOptions(filters.country))
-const filterStateDisabled = computed(() => !filters.country || filterStateOptions.value.length === 0)
-const filterAreaOptions = computed(() => locationsStore.subdivisionOptions(filters.country, filters.state))
-const filterAreaDisabled = computed(() => !filters.country || !filters.state || filterAreaOptions.value.length === 0)
 const totalMembers = computed(() => membersStore.meta?.total || 0)
 const lastPage = computed(() => membersStore.meta?.last_page || 1)
 const hasPreviousPage = computed(() => page.value > 1)
@@ -144,7 +137,7 @@ function openEditForm(member) {
   form.gender = member.gender || ''
   form.date_of_birth = member.dateOfBirth || ''
   form.is_child = Boolean(member.isChild)
-  form.country = member.country || ''
+  form.country = locationsStore.countryName(member.country)
   form.state = member.state || ''
   form.area = member.area || ''
   form.phone_1 = member.phone1 || ''
@@ -235,15 +228,6 @@ watch(selectedSort, async () => {
   await fetchMembers()
 })
 
-watch(() => filters.country, () => {
-  filters.state = ''
-  filters.area = ''
-})
-
-watch(() => filters.state, () => {
-  filters.area = ''
-})
-
 onMounted(() => {
   locationsStore.fetchCountries()
   fetchMembers()
@@ -276,32 +260,12 @@ onMounted(() => {
     </div>
 
     <UCard class="border border-gray-200 bg-white shadow-sm">
-      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-[1fr_220px_220px_220px_auto]">
+      <div class="grid gap-3 md:grid-cols-[1fr_auto]">
         <UInput
           v-model="filters.search"
           icon="i-heroicons-magnifying-glass-20-solid"
           placeholder="Search by name, phone, or email"
           @keyup.enter="applyFilters"
-        />
-        <USelect
-          v-model="filters.country"
-          :items="countryOptions"
-          placeholder="Country"
-          class="w-full"
-        />
-        <USelect
-          v-model="filters.state"
-          :items="filterStateOptions"
-          placeholder="State"
-          class="w-full"
-          :disabled="filterStateDisabled"
-        />
-        <USelect
-          v-model="filters.area"
-          :items="filterAreaOptions"
-          placeholder="Area"
-          class="w-full"
-          :disabled="filterAreaDisabled"
         />
 
         <UButton

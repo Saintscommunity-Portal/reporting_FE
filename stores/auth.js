@@ -155,6 +155,67 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async updateProfile(payload) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const { request } = useWorkerApi()
+        const response = await request('/profile', {
+          method: 'PATCH',
+          body: payload,
+        })
+
+        this.worker = response?.data || response
+        this.syncCookies()
+
+        return response
+      } catch (error) {
+        const errors = error?.data?.errors
+        this.error = errors
+          ? Object.values(errors).flat().join(' ')
+          : error?.data?.message || 'Unable to update your profile.'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async updatePassword(payload) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const { request } = useWorkerApi()
+        return await request('/profile/password', {
+          method: 'PATCH',
+          body: payload,
+        })
+      } catch (error) {
+        const errors = error?.data?.errors
+        this.error = errors
+          ? Object.values(errors).flat().join(' ')
+          : error?.data?.message || 'Unable to update your password.'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async deleteAccount() {
+      this.loading = true
+      this.error = null
+
+      try {
+        const { request } = useWorkerApi()
+        await request('/profile', { method: 'DELETE' })
+      } finally {
+        this.loading = false
+        this.clearSession()
+        await navigateTo('/login')
+      }
+    },
+
     async logout() {
       try {
         if (this.token) {

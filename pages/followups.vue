@@ -311,18 +311,18 @@ onMounted(fetchFollowups)
 
     <UModal v-model:open="reportOpen">
       <template #content>
-        <div class="modal-dark max-h-[88vh] space-y-4 overflow-y-auto bg-gray-950 p-5 text-white">
+        <div class="modal-dark max-h-[88vh] w-[min(92vw,720px)] space-y-4 overflow-y-auto bg-gray-950 p-5 text-white">
           <h2 class="m-0 text-lg font-semibold text-white">{{ editingReportId ? 'Update follow up report' : 'Follow up report' }}</h2>
-          <UFormField label="Target type"><USelect v-model="reportForm.target_type" :items="targetTypeOptions" /></UFormField>
-          <UFormField label="Search target"><UInput v-model="targetSearch" @input="searchTargets" /></UFormField>
+          <UFormField label="Target type"><USelect v-model="reportForm.target_type" :items="targetTypeOptions" class="w-full" /></UFormField>
+          <UFormField label="Search target"><UInput v-model="targetSearch" class="w-full" @input="searchTargets" /></UFormField>
           <UFormField label="Target">
-            <USelect :model-value="reportForm.followup_member_id || reportForm.followup_outreach_report_id" :items="targetOptions" @update:model-value="selectTarget" />
+            <USelect :model-value="reportForm.followup_member_id || reportForm.followup_outreach_report_id" :items="targetOptions" class="w-full" @update:model-value="selectTarget" />
           </UFormField>
-          <UFormField label="Activity"><USelect v-model="reportForm.activity_type" :items="activityOptions" /></UFormField>
-          <UFormField label="Time spent"><UInput v-model="reportForm.time_spent" type="number" /></UFormField>
-          <UFormField label="Material used"><UTextarea v-model="reportForm.material_used" /></UFormField>
-          <UFormField label="Teaching note"><UTextarea v-model="reportForm.teaching_note" /></UFormField>
-          <UFormField label="Response/questions"><UTextarea v-model="reportForm.response_or_questions" /></UFormField>
+          <UFormField label="Activity"><USelect v-model="reportForm.activity_type" :items="activityOptions" class="w-full" /></UFormField>
+          <UFormField label="Time spent"><UInput v-model="reportForm.time_spent" type="number" class="w-full" /></UFormField>
+          <UFormField label="Material used"><UTextarea v-model="reportForm.material_used" class="w-full" /></UFormField>
+          <UFormField label="Teaching note"><UTextarea v-model="reportForm.teaching_note" class="w-full" /></UFormField>
+          <UFormField label="Response/questions"><UTextarea v-model="reportForm.response_or_questions" class="w-full" /></UFormField>
           <div class="flex justify-end gap-2">
             <UButton color="neutral" variant="outline" @click="reportOpen = false">Cancel</UButton>
             <UButton class="bg-[#a83632] text-white hover:bg-[#922f2c]" :loading="saving" @click="saveReport">{{ editingReportId ? 'Update' : 'Save' }}</UButton>
