@@ -19,12 +19,12 @@ const navItems = [
     icon: 'i-heroicons-user-group-20-solid',
   },
   {
-    label: 'Prayer group',
+    label: 'Prayer meetings',
     to: '/prayer-group',
     icon: 'i-heroicons-chart-pie-20-solid',
   },
   {
-    label: 'Study group',
+    label: 'Study Group',
     to: '/study-group',
     icon: 'i-heroicons-book-open-20-solid',
   },

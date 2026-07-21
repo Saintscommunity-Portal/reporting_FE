@@ -41,10 +41,10 @@ weekStart.setHours(0, 0, 0, 0)
 const quickActions = [
   { label: 'Add Member', to: '/members', icon: 'i-heroicons-user-plus-20-solid' },
   { label: 'Mark Attendance', to: '/church-meetings', icon: 'i-heroicons-clipboard-document-check-20-solid' },
-  { label: 'Submit Study', to: '/study-group', icon: 'i-heroicons-book-open-20-solid' },
+  { label: 'Submit Study Group', to: '/study-group', icon: 'i-heroicons-book-open-20-solid' },
   { label: 'Record Outreach', to: '/outreaches', icon: 'i-heroicons-megaphone-20-solid' },
   { label: 'Add Follow Up', to: '/followups', icon: 'i-heroicons-chat-bubble-left-right-20-solid' },
-  { label: 'Prayer Group', to: '/prayer-group', icon: 'i-heroicons-chart-pie-20-solid' },
+  { label: 'Prayer Meetings', to: '/prayer-group', icon: 'i-heroicons-chart-pie-20-solid' },
 ]
 
 function listFrom(response) {
@@ -127,8 +127,8 @@ const hasPrayerThisWeek = computed(() => prayerRows.value.some((row) => {
 const snapshotCards = computed(() => [
   { label: 'My Members', value: totals.members || members.value.length, tone: 'text-gray-950 dark:text-white' },
   { label: 'Added This Month', value: membersThisMonth.value, tone: 'text-[#a83632]' },
-  { label: 'Prayer Present', value: prayerPresentThisMonth.value, tone: 'text-green-800 dark:text-green-300' },
-  { label: 'Study Pending', value: pendingStudyGroups.value.length, tone: 'text-amber-700 dark:text-amber-300' },
+  { label: 'Prayer Meetings Present', value: prayerPresentThisMonth.value, tone: 'text-green-800 dark:text-green-300' },
+  { label: 'Study Group Pending', value: pendingStudyGroups.value.length, tone: 'text-amber-700 dark:text-amber-300' },
   { label: 'Outreaches This Month', value: outreachesThisMonth.value, tone: 'text-gray-950 dark:text-white' },
   { label: 'Follow Ups This Month', value: followupsThisMonth.value, tone: 'text-gray-950 dark:text-white' },
 ])
@@ -138,9 +138,9 @@ const alerts = computed(() => {
 
   if (pendingStudyGroups.value.length) {
     rows.push({
-      title: `${pendingStudyGroups.value.length} study group assignment${pendingStudyGroups.value.length === 1 ? '' : 's'} need attention`,
+      title: `${pendingStudyGroups.value.length} Study Group assignment${pendingStudyGroups.value.length === 1 ? '' : 's'} need attention`,
       to: '/study-group',
-      badge: 'Study',
+      badge: 'Study Group',
     })
   }
 
@@ -154,9 +154,9 @@ const alerts = computed(() => {
 
   if (!hasPrayerThisWeek.value) {
     rows.push({
-      title: 'No prayer participation is recorded for this week yet',
+      title: 'No prayer meeting participation is recorded for this week yet',
       to: '/prayer-group',
-      badge: 'Prayer',
+      badge: 'Prayer Meetings',
     })
   }
 
@@ -195,7 +195,7 @@ const recentActivity = computed(() => {
       to: '/followups',
     },
     recentStudy && {
-      title: `Study: ${recentStudy.title || 'Assignment'}`,
+      title: `Study Group: ${recentStudy.title || 'Assignment'}`,
       subtitle: displayValue(submissionStatus(recentStudy)),
       to: '/study-group',
     },
@@ -334,7 +334,7 @@ onMounted(loadDashboard)
             >
               <div class="flex items-start justify-between gap-3">
                 <div>
-                  <p class="m-0 text-sm font-semibold text-gray-950 dark:text-white">{{ study.title || 'Study group assignment' }}</p>
+                  <p class="m-0 text-sm font-semibold text-gray-950 dark:text-white">{{ study.title || 'Study Group assignment' }}</p>
                   <p class="m-0 mt-1 text-xs text-gray-500 dark:text-gray-400">
                     Due {{ displayDate(study.toDate || study.to_date) }}
                   </p>
@@ -453,13 +453,13 @@ onMounted(loadDashboard)
 
         <div class="grid gap-3 md:grid-cols-3">
           <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-white/10 dark:bg-white/5">
-            <p class="m-0 text-sm font-semibold text-gray-950 dark:text-white">Study group</p>
+            <p class="m-0 text-sm font-semibold text-gray-950 dark:text-white">Study Group</p>
             <p class="m-0 mt-2 text-sm text-gray-500 dark:text-gray-400">
               {{ submittedStudyGroups.length }} submitted or approved, {{ rejectedStudyGroups.length }} rejected, {{ pendingStudyGroups.length }} pending/defaulted.
             </p>
           </div>
           <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-white/10 dark:bg-white/5">
-            <p class="m-0 text-sm font-semibold text-gray-950 dark:text-white">Prayer group</p>
+            <p class="m-0 text-sm font-semibold text-gray-950 dark:text-white">Prayer Meetings</p>
             <p class="m-0 mt-2 text-sm text-gray-500 dark:text-gray-400">
               {{ prayerPresentThisMonth }} present records loaded for this month.
             </p>

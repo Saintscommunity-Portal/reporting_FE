@@ -1,88 +1,94 @@
 <script setup>
 definePageMeta({
-  layout: 'app',
-  middleware: 'auth',
-})
+  layout: "app",
+  middleware: "auth",
+});
 
-const membersStore = useMembersStore()
-const locationsStore = useLocationsStore()
+const membersStore = useMembersStore();
+const locationsStore = useLocationsStore();
 
 const filters = reactive({
-  search: '',
-})
+  search: "",
+});
 
-const page = ref(1)
-const perPage = ref(10)
-const sortBy = ref('created_at')
-const direction = ref('desc')
-const formOpen = ref(false)
-const detailsOpen = ref(false)
-const editingMember = ref(null)
-const formError = ref('')
+const page = ref(1);
+const perPage = ref(10);
+const sortBy = ref("created_at");
+const direction = ref("desc");
+const formOpen = ref(false);
+const detailsOpen = ref(false);
+const editingMember = ref(null);
+const formError = ref("");
 
 const form = reactive({
-  full_name: '',
-  gender: '',
-  date_of_birth: '',
+  full_name: "",
+  gender: "",
+  date_of_birth: "",
   is_child: false,
-  country: '',
-  state: '',
-  area: '',
-  phone_1: '',
-  phone_2: '',
-  email: '',
-  home_address: '',
-  work_address: '',
-  school_address: '',
-  date_added: '',
-  notes: '',
-})
+  country: "",
+  state: "",
+  area: "",
+  phone_1: "",
+  phone_2: "",
+  email: "",
+  home_address: "",
+  work_address: "",
+  school_address: "",
+  date_added: "",
+  notes: "",
+});
 
 const sortOptions = [
-  { label: 'Newest', value: 'created_at:desc' },
-  { label: 'Oldest', value: 'created_at:asc' },
-  { label: 'Name A-Z', value: 'full_name:asc' },
-  { label: 'Name Z-A', value: 'full_name:desc' },
-  { label: 'Date of birth oldest', value: 'date_of_birth:asc' },
-  { label: 'Date of birth newest', value: 'date_of_birth:desc' },
-]
+  { label: "Newest", value: "created_at:desc" },
+  { label: "Oldest", value: "created_at:asc" },
+  { label: "Name A-Z", value: "full_name:asc" },
+  { label: "Name Z-A", value: "full_name:desc" },
+  { label: "Date of birth oldest", value: "date_of_birth:asc" },
+  { label: "Date of birth newest", value: "date_of_birth:desc" },
+];
 
 const genderOptions = [
-  { label: 'Male', value: 'male' },
-  { label: 'Female', value: 'female' },
-]
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+];
 
-const countryOptions = computed(() => locationsStore.countryOptions)
-const stateOptions = computed(() => locationsStore.stateOptions(form.country))
-const stateDisabled = computed(() => !form.country || stateOptions.value.length === 0)
-const areaOptions = computed(() => locationsStore.subdivisionOptions(form.country, form.state))
-const areaDisabled = computed(() => !form.country || !form.state || areaOptions.value.length === 0)
-const totalMembers = computed(() => membersStore.meta?.total || 0)
-const lastPage = computed(() => membersStore.meta?.last_page || 1)
-const hasPreviousPage = computed(() => page.value > 1)
-const hasNextPage = computed(() => page.value < lastPage.value)
-const isEditing = computed(() => Boolean(editingMember.value))
+const countryOptions = computed(() => locationsStore.countryOptions);
+const stateOptions = computed(() => locationsStore.stateOptions(form.country));
+const stateDisabled = computed(
+  () => !form.country || stateOptions.value.length === 0,
+);
+const areaOptions = computed(() =>
+  locationsStore.subdivisionOptions(form.country, form.state),
+);
+const areaDisabled = computed(
+  () => !form.country || !form.state || areaOptions.value.length === 0,
+);
+const totalMembers = computed(() => membersStore.meta?.total || 0);
+const lastPage = computed(() => membersStore.meta?.last_page || 1);
+const hasPreviousPage = computed(() => page.value > 1);
+const hasNextPage = computed(() => page.value < lastPage.value);
+const isEditing = computed(() => Boolean(editingMember.value));
 const selectedSort = computed({
   get() {
-    return `${sortBy.value}:${direction.value}`
+    return `${sortBy.value}:${direction.value}`;
   },
   set(value) {
-    const [field, order] = value.split(':')
-    sortBy.value = field
-    direction.value = order
+    const [field, order] = value.split(":");
+    sortBy.value = field;
+    direction.value = order;
   },
-})
+});
 
 const hasFilters = computed(() => {
-  return Object.values(filters).some((value) => value !== '')
-})
+  return Object.values(filters).some((value) => value !== "");
+});
 
 function displayValue(value) {
-  if (value === null || value === undefined || value === '') {
-    return '-'
+  if (value === null || value === undefined || value === "") {
+    return "-";
   }
 
-  return value
+  return value;
 }
 
 function buildQuery() {
@@ -91,161 +97,167 @@ function buildQuery() {
     per_page: perPage.value,
     sort_by: sortBy.value,
     direction: direction.value,
-  }
+  };
 
   for (const [key, value] of Object.entries(filters)) {
-    if (value !== '' && value !== null) {
-      query[key] = value
+    if (value !== "" && value !== null) {
+      query[key] = value;
     }
   }
 
-  return query
+  return query;
 }
 
 async function fetchMembers() {
-  await membersStore.fetchMembers(buildQuery())
+  await membersStore.fetchMembers(buildQuery());
 }
 
 function resetForm() {
-  form.full_name = ''
-  form.gender = ''
-  form.date_of_birth = ''
-  form.is_child = false
-  form.country = ''
-  form.state = ''
-  form.area = ''
-  form.phone_1 = ''
-  form.phone_2 = ''
-  form.email = ''
-  form.home_address = ''
-  form.work_address = ''
-  form.school_address = ''
-  form.date_added = ''
-  form.notes = ''
-  formError.value = ''
+  form.full_name = "";
+  form.gender = "";
+  form.date_of_birth = "";
+  form.is_child = false;
+  form.country = "";
+  form.state = "";
+  form.area = "";
+  form.phone_1 = "";
+  form.phone_2 = "";
+  form.email = "";
+  form.home_address = "";
+  form.work_address = "";
+  form.school_address = "";
+  form.date_added = "";
+  form.notes = "";
+  formError.value = "";
 }
 
 function openCreateForm() {
-  editingMember.value = null
-  resetForm()
-  formOpen.value = true
+  editingMember.value = null;
+  resetForm();
+  formOpen.value = true;
 }
 
 function openEditForm(member) {
-  editingMember.value = member
-  form.full_name = member.fullName || ''
-  form.gender = member.gender || ''
-  form.date_of_birth = member.dateOfBirth || ''
-  form.is_child = Boolean(member.isChild)
-  form.country = locationsStore.countryName(member.country)
-  form.state = member.state || ''
-  form.area = member.area || ''
-  form.phone_1 = member.phone1 || ''
-  form.phone_2 = member.phone2 || ''
-  form.email = member.email || ''
-  form.home_address = member.homeAddress || ''
-  form.work_address = member.workAddress || ''
-  form.school_address = member.schoolAddress || ''
-  form.date_added = member.dateAdded || ''
-  form.notes = member.notes || ''
-  formError.value = ''
-  formOpen.value = true
+  editingMember.value = member;
+  form.full_name = member.fullName || "";
+  form.gender = member.gender || "";
+  form.date_of_birth = member.dateOfBirth || "";
+  form.is_child = Boolean(member.isChild);
+  form.country = locationsStore.countryName(member.country);
+  form.state = member.state || "";
+  form.area = member.area || "";
+  form.phone_1 = member.phone1 || "";
+  form.phone_2 = member.phone2 || "";
+  form.email = member.email || "";
+  form.home_address = member.homeAddress || "";
+  form.work_address = member.workAddress || "";
+  form.school_address = member.schoolAddress || "";
+  form.date_added = member.dateAdded || "";
+  form.notes = member.notes || "";
+  formError.value = "";
+  formOpen.value = true;
 }
 
 async function openDetails(member) {
-  membersStore.selectedMember = member
-  detailsOpen.value = true
+  membersStore.selectedMember = member;
+  detailsOpen.value = true;
 
   try {
-    await membersStore.fetchMember(member.id)
+    await membersStore.fetchMember(member.id);
   } catch {
     // The card still shows the row data if the detail refresh fails.
   }
 }
 
 function formPayload() {
-  const payload = {}
+  const payload = {};
 
   for (const [key, value] of Object.entries(form)) {
-    if (value !== '' && value !== null) {
-      payload[key] = value
+    if (value !== "" && value !== null) {
+      payload[key] = value;
     }
   }
 
-  return payload
+  return payload;
 }
 
 async function saveMember() {
-  formError.value = ''
+  formError.value = "";
 
   try {
     if (editingMember.value) {
-      await membersStore.updateMember(editingMember.value.id, formPayload())
+      await membersStore.updateMember(editingMember.value.id, formPayload());
     } else {
-      await membersStore.createMember(formPayload())
+      await membersStore.createMember(formPayload());
     }
 
-    formOpen.value = false
-    await fetchMembers()
+    formOpen.value = false;
+    await fetchMembers();
   } catch (error) {
-    const errors = error?.data?.errors
+    const errors = error?.data?.errors;
     formError.value = errors
-      ? Object.values(errors).flat().join(' ')
-      : error?.data?.message || error?.message || 'Unable to save member.'
+      ? Object.values(errors).flat().join(" ")
+      : error?.data?.message || error?.message || "Unable to save member.";
   }
 }
 
 async function applyFilters() {
-  page.value = 1
-  await fetchMembers()
+  page.value = 1;
+  await fetchMembers();
 }
 
 async function clearFilters() {
   for (const key of Object.keys(filters)) {
-    filters[key] = ''
+    filters[key] = "";
   }
 
-  page.value = 1
-  await fetchMembers()
+  page.value = 1;
+  await fetchMembers();
 }
 
 async function goToPage(nextPage) {
-  page.value = nextPage
-  await fetchMembers()
+  page.value = nextPage;
+  await fetchMembers();
 }
 
 function onCountryChange() {
-  form.state = ''
-  form.area = ''
+  form.state = "";
+  form.area = "";
 }
 
 function onStateChange() {
-  form.area = ''
+  form.area = "";
 }
 
 watch(selectedSort, async () => {
-  page.value = 1
-  await fetchMembers()
-})
+  page.value = 1;
+  await fetchMembers();
+});
 
 onMounted(() => {
-  locationsStore.fetchCountries()
-  fetchMembers()
-})
+  locationsStore.fetchCountries();
+  fetchMembers();
+});
 </script>
 
 <template>
   <section class="space-y-5">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div
+      class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+    >
       <div>
-        <p class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#a83632]">
+        <p
+          class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#a83632]"
+        >
           Members
         </p>
-        <h1 class="m-0 text-2xl font-semibold tracking-tight text-gray-950 sm:text-3xl">
+        <h1
+          class="m-0 text-2xl font-semibold tracking-tight text-gray-950 sm:text-3xl"
+        >
           My Members
         </h1>
         <p class="mt-2 text-sm leading-6 text-gray-500">
-          Add, view, and update member records assigned to you.
+          Add, view, and update your disciple list.
         </p>
       </div>
 
@@ -255,7 +267,7 @@ onMounted(() => {
         class="gap-2 px-4 py-2.5 text-white bg-[#a83632] hover:bg-[#922f2c] [&_svg]:text-white"
         @click="openCreateForm"
       >
-        Add member
+        Add a new disciple
       </UButton>
     </div>
 
@@ -264,7 +276,7 @@ onMounted(() => {
         <UInput
           v-model="filters.search"
           icon="i-heroicons-magnifying-glass-20-solid"
-          placeholder="Search by name, phone, or email"
+          placeholder="Search your disciples by name, phone, or email"
           @keyup.enter="applyFilters"
         />
 
@@ -278,12 +290,10 @@ onMounted(() => {
         </UButton>
       </div>
 
-      <div class="mt-4 flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <USelect
-          v-model="selectedSort"
-          :items="sortOptions"
-          class="sm:w-52"
-        />
+      <div
+        class="mt-4 flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <USelect v-model="selectedSort" :items="sortOptions" class="sm:w-52" />
 
         <div class="flex gap-2">
           <UButton
@@ -315,10 +325,11 @@ onMounted(() => {
 
     <div class="flex items-center justify-between text-sm text-gray-500">
       <span>
-        {{ totalMembers }} member{{ totalMembers === 1 ? '' : 's' }}
+        {{ totalMembers }} disciples {{ totalMembers === 1 ? "" : "s" }}
       </span>
       <span v-if="membersStore.meta.from">
-        {{ membersStore.meta.from }}-{{ membersStore.meta.to }} of {{ totalMembers }}
+        {{ membersStore.meta.from }}-{{ membersStore.meta.to }} of
+        {{ totalMembers }}
       </span>
     </div>
 
@@ -331,8 +342,13 @@ onMounted(() => {
       class="border border-dashed border-gray-300 bg-white shadow-sm"
     >
       <div class="py-10 text-center">
-        <UIcon name="i-heroicons-user-group-20-solid" class="mx-auto h-10 w-10 text-[#a83632]" />
-        <h2 class="mb-1 mt-4 text-base font-semibold text-gray-950">No members found</h2>
+        <UIcon
+          name="i-heroicons-user-group-20-solid"
+          class="mx-auto h-10 w-10 text-[#a83632]"
+        />
+        <h2 class="mb-1 mt-4 text-base font-semibold text-gray-950">
+          No members found
+        </h2>
         <p class="mx-auto max-w-sm text-sm leading-6 text-gray-500">
           Add your first member or adjust your filters.
         </p>
@@ -347,30 +363,46 @@ onMounted(() => {
       >
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0">
-            <h2 class="m-0 truncate text-base font-semibold text-gray-950">{{ member.fullName }}</h2>
+            <h2 class="m-0 truncate text-base font-semibold text-gray-950">
+              {{ member.fullName }}
+            </h2>
             <p class="mt-1 text-sm text-gray-500">
-              {{ displayValue(member.gender) }}<span v-if="member.dateOfBirth"> · {{ member.dateOfBirth }}</span><span v-if="member.isChild"> · Child</span><span v-if="member.area"> · {{ member.area }}</span>
+              {{ displayValue(member.gender)
+              }}<span v-if="member.dateOfBirth">
+                · {{ member.dateOfBirth }}</span
+              ><span v-if="member.isChild"> · Child</span
+              ><span v-if="member.area"> · {{ member.area }}</span>
             </p>
           </div>
-          <UBadge color="neutral" variant="soft">{{ displayValue(member.state) }}</UBadge>
+          <UBadge color="neutral" variant="soft">{{
+            displayValue(member.state)
+          }}</UBadge>
         </div>
 
         <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
           <div>
             <p class="m-0 text-xs text-gray-500">Phone</p>
-            <p class="m-0 font-medium text-gray-900">{{ displayValue(member.phone1) }}</p>
+            <p class="m-0 font-medium text-gray-900">
+              {{ displayValue(member.phone1) }}
+            </p>
           </div>
           <div>
             <p class="m-0 text-xs text-gray-500">Email</p>
-            <p class="m-0 truncate font-medium text-gray-900">{{ displayValue(member.email) }}</p>
+            <p class="m-0 truncate font-medium text-gray-900">
+              {{ displayValue(member.email) }}
+            </p>
           </div>
           <div>
             <p class="m-0 text-xs text-gray-500">Country</p>
-            <p class="m-0 font-medium text-gray-900">{{ displayValue(member.country) }}</p>
+            <p class="m-0 font-medium text-gray-900">
+              {{ displayValue(member.country) }}
+            </p>
           </div>
           <div>
             <p class="m-0 text-xs text-gray-500">Cell</p>
-            <p class="m-0 font-medium text-gray-900">{{ displayValue(member.cellName) }}</p>
+            <p class="m-0 font-medium text-gray-900">
+              {{ displayValue(member.cellName) }}
+            </p>
           </div>
         </div>
 
@@ -394,11 +426,16 @@ onMounted(() => {
       </UCard>
     </div>
 
-    <UCard v-if="membersStore.members.length && !membersStore.loading" class="hidden border border-gray-200 bg-white shadow-sm lg:block">
+    <UCard
+      v-if="membersStore.members.length && !membersStore.loading"
+      class="hidden border border-gray-200 bg-white shadow-sm lg:block"
+    >
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-left text-sm">
           <thead>
-            <tr class="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-500">
+            <tr
+              class="border-b border-gray-200 text-xs uppercase tracking-wide text-gray-500"
+            >
               <th class="px-3 py-3 font-semibold">Name</th>
               <th class="px-3 py-3 font-semibold">Gender</th>
               <th class="px-3 py-3 font-semibold">Phone</th>
@@ -416,18 +453,47 @@ onMounted(() => {
               :key="member.id"
               class="border-b border-gray-100 last:border-0 hover:bg-gray-50"
             >
-              <td class="px-3 py-4 font-medium text-gray-950">{{ member.fullName }}</td>
-              <td class="px-3 py-4 text-gray-600">{{ displayValue(member.gender) }}</td>
-              <td class="px-3 py-4 text-gray-600">{{ displayValue(member.phone1) }}</td>
-              <td class="px-3 py-4 text-gray-600">{{ displayValue(member.email) }}</td>
-              <td class="px-3 py-4 text-gray-600">{{ displayValue(member.dateOfBirth) }}</td>
-              <td class="px-3 py-4 text-gray-600">{{ member.isChild ? 'Yes' : 'No' }}</td>
-              <td class="px-3 py-4 text-gray-600">{{ displayValue(member.area) }}, {{ displayValue(member.state) }}, {{ displayValue(member.country) }}</td>
-              <td class="px-3 py-4 text-gray-600">{{ displayValue(member.cellName) }}</td>
+              <td class="px-3 py-4 font-medium text-gray-950">
+                {{ member.fullName }}
+              </td>
+              <td class="px-3 py-4 text-gray-600">
+                {{ displayValue(member.gender) }}
+              </td>
+              <td class="px-3 py-4 text-gray-600">
+                {{ displayValue(member.phone1) }}
+              </td>
+              <td class="px-3 py-4 text-gray-600">
+                {{ displayValue(member.email) }}
+              </td>
+              <td class="px-3 py-4 text-gray-600">
+                {{ displayValue(member.dateOfBirth) }}
+              </td>
+              <td class="px-3 py-4 text-gray-600">
+                {{ member.isChild ? "Yes" : "No" }}
+              </td>
+              <td class="px-3 py-4 text-gray-600">
+                {{ displayValue(member.area) }},
+                {{ displayValue(member.state) }},
+                {{ displayValue(member.country) }}
+              </td>
+              <td class="px-3 py-4 text-gray-600">
+                {{ displayValue(member.cellName) }}
+              </td>
               <td class="px-3 py-4">
                 <div class="flex justify-end gap-2">
-                  <UButton color="neutral" variant="ghost" size="sm" @click="openDetails(member)">View</UButton>
-                  <UButton class="px-3 py-2 text-white bg-[#a83632] hover:bg-[#922f2c]" size="sm" @click="openEditForm(member)">Edit</UButton>
+                  <UButton
+                    color="neutral"
+                    variant="ghost"
+                    size="sm"
+                    @click="openDetails(member)"
+                    >View</UButton
+                  >
+                  <UButton
+                    class="px-3 py-2 text-white bg-[#a83632] hover:bg-[#922f2c]"
+                    size="sm"
+                    @click="openEditForm(member)"
+                    >Edit</UButton
+                  >
                 </div>
               </td>
             </tr>
@@ -448,7 +514,9 @@ onMounted(() => {
       >
         Previous
       </UButton>
-      <span class="text-sm text-gray-500">Page {{ page }} of {{ lastPage }}</span>
+      <span class="text-sm text-gray-500"
+        >Page {{ page }} of {{ lastPage }}</span
+      >
       <UButton
         color="neutral"
         variant="outline"
@@ -473,10 +541,14 @@ onMounted(() => {
           <div class="flex items-start justify-between gap-4">
             <div>
               <h2 class="m-0 text-xl font-semibold text-white">
-                {{ isEditing ? 'Update member' : 'Add member' }}
+                {{
+                  isEditing ? "Update disciple details" : "Add a new disciple"
+                }}
               </h2>
               <p class="mt-1 text-sm text-gray-300">
-                {{ isEditing ? 'Edit member information you own.' : 'Create a new member assigned to your worker account.' }}
+                {{
+                  isEditing ? "Update information." : "Create a new disciple."
+                }}
               </p>
             </div>
             <UButton
@@ -504,7 +576,12 @@ onMounted(() => {
               <UInput v-model="form.full_name" required class="w-full" />
             </UFormField>
             <UFormField label="Gender">
-              <USelect v-model="form.gender" :items="genderOptions" placeholder="Select gender" class="w-full" />
+              <USelect
+                v-model="form.gender"
+                :items="genderOptions"
+                placeholder="Select gender"
+                class="w-full"
+              />
             </UFormField>
             <UFormField label="Date of birth">
               <UInput v-model="form.date_of_birth" type="date" class="w-full" />
@@ -563,7 +640,11 @@ onMounted(() => {
               <UTextarea v-model="form.work_address" :rows="2" class="w-full" />
             </UFormField>
             <UFormField label="School address" class="sm:col-span-2">
-              <UTextarea v-model="form.school_address" :rows="2" class="w-full" />
+              <UTextarea
+                v-model="form.school_address"
+                :rows="2"
+                class="w-full"
+              />
             </UFormField>
             <UFormField label="Notes" class="sm:col-span-2">
               <UTextarea v-model="form.notes" :rows="3" class="w-full" />
@@ -588,7 +669,7 @@ onMounted(() => {
               :loading="membersStore.saving"
               class="px-4 py-2.5 text-white bg-[#a83632] hover:bg-[#922f2c]"
             >
-              {{ isEditing ? 'Save changes' : 'Create member' }}
+              {{ isEditing ? "Save changes" : "Create member" }}
             </UButton>
           </div>
         </div>
@@ -601,15 +682,15 @@ onMounted(() => {
       role="dialog"
       aria-modal="true"
     >
-      <div class="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-gray-950 p-5 text-white shadow-xl sm:mx-auto sm:max-w-xl sm:rounded-2xl">
+      <div
+        class="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-gray-950 p-5 text-white shadow-xl sm:mx-auto sm:max-w-xl sm:rounded-2xl"
+      >
         <div class="mb-5 flex items-start justify-between gap-4">
           <div>
             <h2 class="m-0 text-xl font-semibold text-white">
               {{ membersStore.selectedMember?.fullName }}
             </h2>
-            <p class="mt-1 text-sm text-gray-300">
-              Member details
-            </p>
+            <p class="mt-1 text-sm text-gray-300">Member details</p>
           </div>
           <UButton
             color="neutral"
@@ -621,27 +702,33 @@ onMounted(() => {
         </div>
 
         <dl class="grid gap-4 sm:grid-cols-2">
-          <div v-for="item in [
-            ['Gender', membersStore.selectedMember?.gender],
-            ['Date of birth', membersStore.selectedMember?.dateOfBirth],
-            ['Child', membersStore.selectedMember?.isChild ? 'Yes' : 'No'],
-            ['Phone 1', membersStore.selectedMember?.phone1],
-            ['Phone 2', membersStore.selectedMember?.phone2],
-            ['Email', membersStore.selectedMember?.email],
-            ['Country', membersStore.selectedMember?.country],
-            ['State', membersStore.selectedMember?.state],
-            ['Area', membersStore.selectedMember?.area],
-            ['Church', membersStore.selectedMember?.churchName],
-            ['Fellowship', membersStore.selectedMember?.fellowshipName],
-            ['Cell', membersStore.selectedMember?.cellName],
-            ['Date added', membersStore.selectedMember?.dateAdded],
-            ['Home address', membersStore.selectedMember?.homeAddress],
-            ['Work address', membersStore.selectedMember?.workAddress],
-            ['School address', membersStore.selectedMember?.schoolAddress],
-            ['Notes', membersStore.selectedMember?.notes],
-          ]" :key="item[0]" class="rounded-xl border border-white/10 bg-white/5 p-3">
+          <div
+            v-for="item in [
+              ['Gender', membersStore.selectedMember?.gender],
+              ['Date of birth', membersStore.selectedMember?.dateOfBirth],
+              ['Child', membersStore.selectedMember?.isChild ? 'Yes' : 'No'],
+              ['Phone 1', membersStore.selectedMember?.phone1],
+              ['Phone 2', membersStore.selectedMember?.phone2],
+              ['Email', membersStore.selectedMember?.email],
+              ['Country', membersStore.selectedMember?.country],
+              ['State', membersStore.selectedMember?.state],
+              ['Area', membersStore.selectedMember?.area],
+              ['Church', membersStore.selectedMember?.churchName],
+              ['Fellowship', membersStore.selectedMember?.fellowshipName],
+              ['Cell', membersStore.selectedMember?.cellName],
+              ['Date added', membersStore.selectedMember?.dateAdded],
+              ['Home address', membersStore.selectedMember?.homeAddress],
+              ['Work address', membersStore.selectedMember?.workAddress],
+              ['School address', membersStore.selectedMember?.schoolAddress],
+              ['Notes', membersStore.selectedMember?.notes],
+            ]"
+            :key="item[0]"
+            class="rounded-xl border border-white/10 bg-white/5 p-3"
+          >
             <dt class="text-xs font-medium text-gray-300">{{ item[0] }}</dt>
-            <dd class="mb-0 mt-1 text-sm font-medium text-white">{{ displayValue(item[1]) }}</dd>
+            <dd class="mb-0 mt-1 text-sm font-medium text-white">
+              {{ displayValue(item[1]) }}
+            </dd>
           </div>
         </dl>
 
@@ -649,7 +736,10 @@ onMounted(() => {
           <UButton
             block
             class="px-4 py-2.5 text-white bg-[#a83632] hover:bg-[#922f2c]"
-            @click="openEditForm(membersStore.selectedMember); detailsOpen = false"
+            @click="
+              openEditForm(membersStore.selectedMember);
+              detailsOpen = false;
+            "
           >
             Edit member
           </UButton>
