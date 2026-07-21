@@ -21,6 +21,7 @@ export default defineNuxtConfig({
       title: "Saints Community Church",
       meta: [
         { name: "theme-color", content: "#a83632" },
+        { name: "mobile-web-app-capable", content: "yes" },
         { name: "apple-mobile-web-app-capable", content: "yes" },
         { name: "apple-mobile-web-app-status-bar-style", content: "default" },
         {

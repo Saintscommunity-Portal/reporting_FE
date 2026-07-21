@@ -1,5 +1,12 @@
 import { defineStore } from 'pinia'
 
+const workerAuthCookieOptions = {
+  sameSite: 'lax',
+  maxAge: 60 * 60 * 24 * 30,
+  secure: import.meta.env.PROD,
+  default: () => null,
+}
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null,
@@ -32,28 +39,16 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     hydrateFromCookie() {
-      const tokenCookie = useCookie('reporting_worker_token', {
-        sameSite: 'lax',
-        default: () => null,
-      })
-      const workerCookie = useCookie('reporting_worker_user', {
-        sameSite: 'lax',
-        default: () => null,
-      })
+      const tokenCookie = useCookie('reporting_worker_token', workerAuthCookieOptions)
+      const workerCookie = useCookie('reporting_worker_user', workerAuthCookieOptions)
 
       this.token = tokenCookie.value
       this.worker = workerCookie.value
     },
 
     syncCookies() {
-      const tokenCookie = useCookie('reporting_worker_token', {
-        sameSite: 'lax',
-        default: () => null,
-      })
-      const workerCookie = useCookie('reporting_worker_user', {
-        sameSite: 'lax',
-        default: () => null,
-      })
+      const tokenCookie = useCookie('reporting_worker_token', workerAuthCookieOptions)
+      const workerCookie = useCookie('reporting_worker_user', workerAuthCookieOptions)
 
       tokenCookie.value = this.token
       workerCookie.value = this.worker

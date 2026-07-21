@@ -86,6 +86,11 @@ async function saveOutreach() {
   }
 }
 
+function viewReports(outreach) {
+  if (!outreach?.id) return;
+  navigateTo(`/outreaches/${outreach.id}`);
+}
+
 onMounted(async () => {
   await Promise.all([fetchOutreaches(), fetchMembers()]);
 });
@@ -115,7 +120,7 @@ onMounted(async () => {
         icon="i-heroicons-plus-20-solid"
         class="bg-[#a83632] text-white hover:bg-[#922f2c]"
         @click="openCreateOutreach"
-        >Add new outreach report</UButton
+        >Add new outreach activity</UButton
       >
     </div>
 
@@ -173,9 +178,9 @@ onMounted(async () => {
               </p>
             </div>
             <UButton
-              :to="`/outreaches/${outreach.id}`"
               color="neutral"
               variant="outline"
+              @click="viewReports(outreach)"
               >View reports</UButton
             >
           </div>
@@ -224,7 +229,6 @@ onMounted(async () => {
         </div>
       </template>
     </UModal>
-
   </section>
 </template>
 
