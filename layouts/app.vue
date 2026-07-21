@@ -1,6 +1,10 @@
 <script setup>
 const auth = useAuthStore()
 const mobileMenuOpen = ref(false)
+const installHelpOpen = ref(false)
+const installPrompt = ref(null)
+const canInstallApp = ref(false)
+const isInstalledApp = ref(false)
 const { isDark, toggleTheme, initTheme } = useThemeMode()
 
 const navItems = [
@@ -62,8 +66,43 @@ function displayProfileValue(value) {
   return String(value).replace(/_/g, ' ')
 }
 
+function updateInstallState() {
+  if (typeof window === 'undefined') return
+
+  isInstalledApp.value =
+    window.matchMedia?.('(display-mode: standalone)')?.matches ||
+    window.navigator.standalone === true
+}
+
+async function installApp() {
+  if (installPrompt.value) {
+    const promptEvent = installPrompt.value
+    installPrompt.value = null
+    canInstallApp.value = false
+    promptEvent.prompt()
+    await promptEvent.userChoice
+    updateInstallState()
+    return
+  }
+
+  installHelpOpen.value = true
+}
+
 onMounted(() => {
   initTheme()
+  updateInstallState()
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault()
+    installPrompt.value = event
+    canInstallApp.value = true
+  })
+
+  window.addEventListener('appinstalled', () => {
+    installPrompt.value = null
+    canInstallApp.value = false
+    isInstalledApp.value = true
+  })
 })
 </script>
 
@@ -113,6 +152,17 @@ onMounted(() => {
           </div>
 
           <div class="flex items-center gap-2">
+          <UButton
+            v-if="!isInstalledApp"
+            color="neutral"
+            variant="outline"
+            icon="i-heroicons-arrow-down-tray-20-solid"
+            class="rounded-full border-[#a83632]/30 bg-white px-3 text-[#a83632] hover:bg-[#a83632]/10 dark:border-[#f2b3af]/30 dark:bg-gray-950 dark:text-[#f2b3af] dark:hover:bg-[#a83632]/20"
+            @click="installApp"
+          >
+            <span class="hidden sm:inline">Install app</span>
+          </UButton>
+
           <UButton
             color="neutral"
             variant="ghost"
@@ -223,6 +273,16 @@ onMounted(() => {
         </div>
 
         <nav class="flex-1 space-y-1 p-3">
+          <button
+            v-if="!isInstalledApp"
+            type="button"
+            class="mb-3 flex w-full items-center gap-3 rounded-xl border border-[#a83632]/20 bg-[#a83632]/10 px-3 py-3 text-left text-sm font-semibold text-[#a83632] dark:border-[#f2b3af]/25 dark:bg-[#a83632]/20 dark:text-[#f2b3af]"
+            @click="installApp"
+          >
+            <UIcon name="i-heroicons-arrow-down-tray-20-solid" class="h-5 w-5" />
+            <span>Install app</span>
+          </button>
+
           <NuxtLink
             v-for="item in navItems"
             :key="item.to"
@@ -237,5 +297,38 @@ onMounted(() => {
         </nav>
       </aside>
     </div>
+
+    <UModal v-model:open="installHelpOpen">
+      <template #content>
+        <div class="rounded-2xl bg-white p-5 text-gray-900 shadow-xl dark:bg-gray-900 dark:text-gray-100">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="m-0 text-base font-semibold">Install Saints Community Church</p>
+              <p class="m-0 mt-1 text-sm text-gray-500 dark:text-gray-400">
+                If Chrome does not show the native install prompt yet, use the browser menu.
+              </p>
+            </div>
+            <UButton
+              color="neutral"
+              variant="ghost"
+              icon="i-heroicons-x-mark-20-solid"
+              aria-label="Close install help"
+              @click="installHelpOpen = false"
+            />
+          </div>
+
+          <div class="mt-5 space-y-3 text-sm text-gray-700 dark:text-gray-200">
+            <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-700">
+              <p class="m-0 font-semibold">Android Chrome</p>
+              <p class="m-0 mt-1">Tap the three-dot menu, then choose <span class="font-semibold">Install app</span> or <span class="font-semibold">Add to Home screen</span>.</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-700">
+              <p class="m-0 font-semibold">iPhone Safari</p>
+              <p class="m-0 mt-1">Tap Share, then choose <span class="font-semibold">Add to Home Screen</span>.</p>
+            </div>
+          </div>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
