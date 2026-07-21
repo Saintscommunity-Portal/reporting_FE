@@ -18,33 +18,74 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: "SCC Reporting",
+      title: "Saints Community Church",
       meta: [
         { name: "theme-color", content: "#a83632" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+        {
+          name: "apple-mobile-web-app-title",
+          content: "Saints Community Church",
+        },
         {
           name: "viewport",
           content: "width=device-width, initial-scale=1, viewport-fit=cover",
         },
+      ],
+      link: [
+        { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+        { rel: "icon", type: "image/png", sizes: "192x192", href: "/icons/icon-192.png" },
+        { rel: "icon", type: "image/png", sizes: "512x512", href: "/icons/icon-512.png" },
       ],
     },
   },
 
   pwa: {
     registerType: "autoUpdate",
+    workbox: {
+      navigateFallback: "/",
+      cleanupOutdatedCaches: true,
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      runtimeCaching: [
+        {
+          urlPattern: ({ url }) => url.origin === self.location.origin,
+          handler: "NetworkFirst",
+          options: {
+            cacheName: "scc-reporting-app-shell",
+            expiration: {
+              maxEntries: 80,
+              maxAgeSeconds: 60 * 60 * 24 * 7,
+            },
+          },
+        },
+      ],
+    },
     manifest: {
-      name: "SCC Reporting",
-      short_name: "SCC Report",
-      description: "Mobile reporting app for SCC workers",
+      name: "Saints Community Church",
+      short_name: "SCC",
+      description: "Mobile reporting app for Saints Community Church workers",
       theme_color: "#a83632",
       background_color: "#ffffff",
       display: "standalone",
       orientation: "portrait",
       start_url: "/",
+      scope: "/",
       icons: [
         {
-          src: "/favicon.ico",
-          sizes: "48x48",
-          type: "image/x-icon",
+          src: "/icons/icon-192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "/icons/icon-512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+        {
+          src: "/icons/icon-maskable-512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "maskable",
         },
       ],
     },
