@@ -115,7 +115,7 @@ async function fetchProfileOptions() {
     prayerGroupOptions.value = normalizeOptions(prayerGroupsResponse?.data)
     departmentOptions.value = normalizeOptions(departmentsResponse?.data)
   } catch (error) {
-    errorMessage.value = error?.data?.message || 'Unable to load prayer group and department options.'
+    errorMessage.value = error?.data?.message || 'Unable to load prayer meeting group and department options.'
   } finally {
     profileOptionsLoading.value = false
   }
@@ -308,12 +308,12 @@ onMounted(() => {
               <UInput v-model="form.worker_since" type="date" size="xl" class="w-full" />
             </UFormField>
 
-            <UFormField label="Prayer group" name="prayer_group_id">
+            <UFormField label="Prayer meeting group" name="prayer_group_id">
               <USelect
                 v-model="form.prayer_group_id"
                 :items="prayerGroupOptions"
                 :loading="profileOptionsLoading"
-                placeholder="Select prayer group"
+                placeholder="Select prayer meeting group"
                 size="xl"
                 class="w-full"
               />

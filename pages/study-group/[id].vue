@@ -97,7 +97,7 @@ async function refresh() {
   try {
     await Promise.all([fetchStudyGroup(), fetchMembers()])
   } catch (error) {
-    errorMessage.value = error?.data?.message || error?.message || 'Unable to load study group.'
+    errorMessage.value = error?.data?.message || error?.message || 'Unable to load Study Group.'
   } finally {
     loading.value = false
   }
@@ -133,7 +133,7 @@ async function submitStudyGroup() {
     submitOpen.value = false
     await refresh()
   } catch (error) {
-    formError.value = error?.data?.message || error?.message || 'Unable to submit study group.'
+    formError.value = error?.data?.message || error?.message || 'Unable to submit Study Group.'
   } finally {
     saving.value = false
   }
@@ -165,7 +165,7 @@ onMounted(refresh)
       <UCard class="border border-gray-200 bg-white shadow-sm">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p class="m-0 text-xs font-bold uppercase tracking-[0.18em] text-[#a83632]">Study group</p>
+            <p class="m-0 text-xs font-bold uppercase tracking-[0.18em] text-[#a83632]">Study Group</p>
             <h1 class="m-0 mt-2 text-2xl font-semibold tracking-tight text-gray-950 sm:text-3xl">{{ studyGroup.title }}</h1>
             <p class="m-0 mt-2 text-sm capitalize text-gray-500">
               {{ displayValue(studyGroup.materialType) }} / {{ displayDate(studyGroup.fromDate) }} to {{ displayDate(studyGroup.toDate) }}
@@ -257,7 +257,7 @@ onMounted(refresh)
       <template #content>
         <div class="modal-dark w-[calc(100vw-2rem)] max-w-lg space-y-4 bg-gray-950 p-5 text-white sm:w-full">
           <div>
-            <h2 class="m-0 text-lg font-semibold text-white">{{ submitButtonLabel }} study group</h2>
+            <h2 class="m-0 text-lg font-semibold text-white">{{ submitButtonLabel }} Study Group</h2>
             <p class="m-0 mt-1 text-sm text-gray-300">{{ studyGroup?.title }}</p>
           </div>
           <UAlert v-if="formError" color="error" variant="soft" :title="formError" />

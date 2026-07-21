@@ -78,7 +78,7 @@ async function fetchStudyGroups() {
     studyGroups.value = response?.data || []
     meta.value = { ...meta.value, ...(response?.meta || {}) }
   } catch (error) {
-    errorMessage.value = error?.data?.message || error?.message || 'Unable to load study groups.'
+    errorMessage.value = error?.data?.message || error?.message || 'Unable to load Study Groups.'
   } finally {
     loading.value = false
   }
@@ -100,8 +100,8 @@ onMounted(fetchStudyGroups)
 <template>
   <section class="space-y-5">
     <div>
-      <p class="m-0 text-xs font-bold uppercase tracking-[0.18em] text-[#a83632]">Study group</p>
-      <h1 class="m-0 mt-2 text-2xl font-semibold tracking-tight text-gray-950 sm:text-3xl">Church study groups</h1>
+      <p class="m-0 text-xs font-bold uppercase tracking-[0.18em] text-[#a83632]">Study Group</p>
+      <h1 class="m-0 mt-2 text-2xl font-semibold tracking-tight text-gray-950 sm:text-3xl">Church Study Groups</h1>
       <p class="m-0 mt-2 text-sm text-gray-500">View assignments created for your church and open one to submit your work.</p>
     </div>
 
@@ -122,7 +122,7 @@ onMounted(fetchStudyGroups)
 
     <UCard class="border border-gray-200 bg-white shadow-sm">
       <div class="grid gap-3 md:grid-cols-[1fr_160px_160px_auto]">
-        <UInput v-model="filters.search" placeholder="Search study groups" />
+        <UInput v-model="filters.search" placeholder="Search Study Groups" />
         <UInput v-model="filters.date_from" type="date" />
         <UInput v-model="filters.date_to" type="date" />
         <UButton class="bg-[#a83632] text-white hover:bg-[#922f2c]" :loading="loading" @click="applyFilters">Apply</UButton>
@@ -143,7 +143,7 @@ onMounted(fetchStudyGroups)
         <USkeleton v-for="item in 4" :key="item" class="h-24 rounded-2xl" />
       </div>
       <div v-else-if="!studyGroups.length" class="py-8 text-center text-sm text-gray-500">
-        No study groups found.
+        No Study Groups found.
       </div>
       <div v-else class="space-y-3">
         <NuxtLink
